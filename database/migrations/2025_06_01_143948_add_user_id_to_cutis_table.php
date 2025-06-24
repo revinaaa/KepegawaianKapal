@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cutis', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable()->after('id_karyawan');
+        // Schema::table('cutis', function (Blueprint $table) {
+        //     $table->string('user_nik')->nullable(); // tanpa 'after'
 
-            // Jika ingin menghubungkan ke tabel users (foreign key)
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+
+        //     // Foreign key ke tabel users, kolom nik
+        //     $table->foreign('user_nik')->references('nik')->on('users')->onDelete('cascade');
+        // });
     }
 
     /**
@@ -24,9 +25,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cutis', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        // Schema::table('cutis', function (Blueprint $table) {
+        //     $table->dropForeign(['user_nik']);
+        //     $table->dropColumn('user_nik');
+        // });
     }
 };

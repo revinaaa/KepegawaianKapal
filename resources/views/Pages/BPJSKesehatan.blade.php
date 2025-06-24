@@ -30,9 +30,8 @@
                 <div class="card-body p-4">
                     {{-- Tombol Tambah --}}
                     <div class="d-flex justify-content-end mb-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#tambahBpjs">
-                            <i class="bi bi-plus-square me-1"></i> Tambah Jabatan
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahBpjs">
+                            <i class="bi bi-plus-square me-1"></i> Tambah BPJS
                         </button>
                     </div>
 
@@ -93,14 +92,18 @@
                                                 data-bs-target="#editBPJS{{ $item->slug }}">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
-                                            <form action="{{ route('bpjsKesehatan.destroy', $item->slug) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('Yakin ingin hapus data ini?')">
+                                            <form id="form-hapus-bpjs-kesehatan-{{ $item->id }}"
+                                                action="{{ route('bpjsKesehatan.destroy', $item->slug) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash3"></i>
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="hapusBpjsKesehatan('{{ $item->id }}')">
+                                                    <i class="bi bi-trash"></i> Hapus
                                                 </button>
                                             </form>
+
+
                                         </td>
                                     </tr>
 
@@ -109,7 +112,8 @@
                                         aria-labelledby="editBPJSLabel{{ $item->slug }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form action="{{ route('bpjsKesehatan.update', $item->slug) }}" method="POST">
+                                                <form action="{{ route('bpjsKesehatan.update', $item->slug) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-header">
@@ -181,7 +185,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Modal Tambah BPJS Kesehatan -->
@@ -240,4 +243,25 @@
         </div>
     </div>
 
+@endsection
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function hapusBpjsKesehatan(id) {
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Data BPJS Kesehatan yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('form-hapus-bpjs-kesehatan-' + id).submit();
+                }
+            });
+        }
+    </script>
 @endsection

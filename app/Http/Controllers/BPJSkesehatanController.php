@@ -11,7 +11,7 @@ class BPJSkesehatanController extends Controller
     public function index()
     {
         $bpjskesehatan = BpjsKesehatan::all();
-        return view('Pages.BPJSKehatan', compact('bpjskesehatan'));
+        return view('Pages.BPJSKesehatan', compact('bpjskesehatan'));
     }
 
     public function store(Request $request)

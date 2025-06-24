@@ -10,7 +10,6 @@ class JabatanController extends Controller
     public function index()
     {
         $jabatans = Jabatan::all();
-
         return view('Pages.Jabatan', compact('jabatans'));
     }
 
@@ -27,7 +26,6 @@ class JabatanController extends Controller
         Jabatan::create([
             'nama' => $request->nama,
         ]);
-
 
         return redirect()->back()->with('success', 'Jabatan berhasil ditambahkan.');
     }
@@ -57,6 +55,9 @@ class JabatanController extends Controller
 
         $jabatan->delete();
 
-        return redirect()->back()->with('success', 'Jabatan berhasil dihapus.');
+        return redirect()->back()->with([
+            'success' => 'Jabatan berhasil dihapus!',
+            'hapus' => true
+        ]);
     }
 }

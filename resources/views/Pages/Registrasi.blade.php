@@ -20,9 +20,10 @@
                         <div class="card mb-0">
                             <div class="card-body">
                                 <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                    <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                                    <img src="{{ asset('assets/images/logos/PT_Masada_Jaya_Lines.png') }}"
+                                        width="180" alt="Logo Baru">
                                 </a>
-                                <p class="text-center">Your Social Campaigns</p>
+                                <p class="text-center">PT Masada Jaya Lines</p>
                                 @if (Session::has('status') && Session::has('message'))
                                     <div class="alert 
                                         @if (Session::get('status') == 'failed') alert-danger
@@ -37,27 +38,31 @@
                                 @endif
                                 <form action="{{ route('registrasi.store') }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="status" value="inactive">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Username</label>
                                         <input type="text" name="name" class="form-control"
                                             id="exampleInputEmail1" aria-describedby="emailHelp">
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">NIK</label>
+                                        <input type="text" name="nik" class="form-control" required>
+                                    </div>
+
+
                                     <div class="mb-4">
                                         <label for="password" class="form-label">Password</label>
-                                        <input type="password" name="password" class="form-control"
-                                            id="password">
+                                        <input type="password" name="password" class="form-control" id="password">
                                     </div>
                                     <div class="mb-4">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control"
-                                            id="email">
+                                        <input type="email" name="email" class="form-control" id="email">
                                     </div>
                                     <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign
                                         In</button>
                                     <div class="d-flex align-items-center justify-content-center">
                                         <p class="fs-4 mb-0 fw-bold">Sudah Punya Akun</p>
-                                        <a class="text-primary fw-bold ms-2"
-                                            href="{{ route('login') }}">Login</a>
+                                        <a class="text-primary fw-bold ms-2" href="{{ route('login') }}">Login</a>
                                     </div>
                                 </form>
                             </div>
@@ -74,6 +79,21 @@
     <script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/dist/simplebar.js') }}"></script>
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (session('status') === 'success')
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Registrasi Berhasil!',
+            text: 'Harap menunggu konfirmasi admin.',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+
 </body>
 
 </html>

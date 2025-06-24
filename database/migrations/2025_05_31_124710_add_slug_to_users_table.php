@@ -4,25 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddSlugToUsersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('slug', 255)->nullable();
+            // Tambahkan kolom hanya jika belum ada
+            if (!Schema::hasColumn('users', 'slug')) {
+                $table->string('slug')->nullable();
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('slug');
+            if (Schema::hasColumn('users', 'slug')) {
+                $table->dropColumn('slug');
+            }
         });
     }
-};
+}

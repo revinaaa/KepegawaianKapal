@@ -42,15 +42,24 @@
 
 @section('content')
     <!-- Header Profile -->
-    <div class="profile-header">
-        @if ($cuti->karyawan->foto != '')
-            <img src="{{ asset('storage/cover/' . $cuti->karyawan->foto) }}" alt="Avatar" class="profile-img mb-3">
-        @else
-            <img src="{{ asset('img/foto-tidak-ada.png') }}" alt="No Avatar" class="profile-img mb-3">
-        @endif
-        <h2 class="text-white">{{ $cuti->karyawan->nama }}</h2>
-        <p class="lead">{{ $cuti->karyawan->jabatan->nama }}</p>
-    </div>
+<div class="profile-header">
+    {{-- Foto karyawan --}}
+    @if (!empty($cuti->karyawan->foto))
+        <img src="{{ asset('storage/cover/' . $cuti->karyawan->foto) }}" alt="Avatar" class="profile-img mb-3">
+    @else
+        <img src="{{ asset('img/foto-tidak-ada.png') }}" alt="No Avatar" class="profile-img mb-3">
+    @endif
+
+   <h2 class="text-white">
+    {{ $cuti->karyawan->nama ?? '-' }}
+</h2>
+
+<p class="lead">
+    {{ $cuti->karyawan->jabatan->nama ?? '-' }}
+</p>
+</div>
+
+
 
     <!-- Info Detail -->
     <div class="container mt-4">
@@ -71,14 +80,23 @@
                     </p>
 
                     <!-- Tombol Aksi -->
-                    <div class="d-flex justify-content-end gap-2 mt-3">
-                        <a href="{{ route('cuti.disetujui', $cuti->slug) }}" class="btn btn-success">
-                            <i class="bi bi-check-circle"></i> Setujui
-                        </a>
-                        <a href="{{ route('cuti.ditolak', $cuti->slug) }}" class="btn btn-danger">
-                            <i class="bi bi-x-circle"></i> Tolak
-                        </a>
-                    </div>
+                    
+                     {{-- @if (in_array(Auth::user()->role_id, [1]))
+                                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#editCuti{{ $cuti->slug }}">
+                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                </button>
+                                                <form id="form-hapus-cuti-{{ $cuti->id }}"
+                                                    action="{{ route('cuti.destroy', $cuti->slug) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        onclick="hapusCuti('{{ $cuti->id }}')">
+                                                        <i class="bi bi-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            @endif --}}
                 </div>
             </div>
 
@@ -91,12 +109,6 @@
                         <li><strong>Tangal Cuti: </strong>{{ $cuti->tanggal_mulai }} Sampai {{ $cuti->tanggal_akhir }}</li>
                         <li><strong>Email:</strong>{{ $cuti->email }}</li>
                     </ul>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                        <a href="#"><i class="bi bi-github"></i></a>
-                    </div>
                 </div>
             </div>
         </div>

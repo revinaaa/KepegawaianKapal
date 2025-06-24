@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('status')->default('inactive')->after('name');
-            
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     // Tambahkan kolom status setelah kolom 'name'
+        //     $table->enum('status', ['active', 'inactive'])->default('inactive')->after('name');
+        // });
     }
 
     /**
@@ -22,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     // Hapus kolom status jika rollback
+        //     $table->dropColumn('status');
+        // });
     }
 };

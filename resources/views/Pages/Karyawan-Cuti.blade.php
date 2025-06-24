@@ -36,18 +36,23 @@
                     </div>
 
                     {{-- Judul --}}
-                    <h5 class="card-title fw-semibold mb-4">List Cuti</h5>
-
+                    <h5 class="card-title fw-semibold mb-4">Pengajuan Cuti</h5>
                     {{-- Tabel --}}
                     <div class="table-responsive">
                         <table class="table text-nowrap mb-0 align-middle">
                             <thead class="text-dark fs-4">
                                 <tr>
+                                    {{-- <th>
+                    <h6 class="fw-semibold mb-1">No</h6>
+                </th> --}}
                                     <th>
-                                        <h6 class="fw-semibold mb-1">No</h6>
+                                        <h6 class="fw-semibold mb-1">lampiran</h6>
                                     </th>
                                     <th>
                                         <h6 class="fw-semibold mb-1">Nama Karyawan</h6>
+                                    </th>
+                                    <th>
+                                        <h6 class="fw-semibold mb-1">NIK</h6>
                                     </th>
                                     <th>
                                         <h6 class="fw-semibold mb-1">Jenis Cuti</h6>
@@ -59,12 +64,9 @@
                                         <h6 class="fw-semibold mb-1">Tanggal Akhir</h6>
                                     </th>
                                     <th>
-                                        <h6 class="fw-semibold mb-1">Alasan</h6>
-                                    </th>
-                                    <th>
                                         <h6 class="fw-semibold mb-1">Status</h6>
                                     </th>
-                                    <th>
+                                    <th class="text-center align-top" style="width: 130px;">
                                         <h6 class="fw-semibold mb-1">Aksi</h6>
                                     </th>
                                 </tr>
@@ -72,12 +74,31 @@
                             <tbody>
                                 @foreach ($cutis as $item)
                                     <tr>
+                                        {{-- <td>
+                        <h6 class="fw-semibold mb-1">{{ $loop->iteration }}</h6>
+                    </td> --}}
                                         <td>
-                                            <h6 class="fw-semibold mb-1">{{ $loop->iteration }}</h6>
+                                            @if ($item->lampiran)
+                                                <a href="{{ route('lihat.lampiran', $item->lampiran) }}" target="_blank"
+                                                    class="btn btn-sm btn-primary">
+                                                    Lihat Lampiran
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
                                         </td>
                                         <td>
-                                            <h6 class="fw-semibold mb-1">{{ Auth::user()->name }}</h6>
+                                            <h6 class="fw-semibold mb-1">{{ $item->karyawan->nama ?? '-' }}</h6>
                                         </td>
+                                        <td>
+                                            <h6 class="fw-semibold mb-1">{{ $item->karyawan->nik ?? '-' }}</h6>
+                                        </td>
+
+                                        {{-- <h6 class="fw-semibold mb-1">{{ Auth::user()->name }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="fw-semibold mb-1">{{ $item->karyawan->nik ?? '-' }}</h6> --}}
+                                        {{-- </td> --}}
                                         <td>
                                             <h6 class="fw-semibold mb-1">{{ $item->jenis_cuti }}</h6>
                                         </td>
@@ -88,12 +109,8 @@
                                             <h6 class="fw-semibold mb-1">{{ $item->tanggal_akhir }}</h6>
                                         </td>
                                         <td>
-                                            <h6 class="fw-semibold mb-1">{{ $item->alasan }}</h6>
-                                        </td>
-                                        <td>
                                             @php
                                                 $badgeClass = 'bg-secondary';
-
                                                 switch ($item->status) {
                                                     case 'proses':
                                                         $badgeClass = 'bg-warning';
@@ -106,26 +123,32 @@
                                                         break;
                                                 }
                                             @endphp
-
                                             <h6 class="fw-semibold mb-1">
                                                 <span
                                                     class="badge {{ $badgeClass }} rounded-3 fw-semibold">{{ $item->status }}</span>
                                             </h6>
-
                                         </td>
-                                        <td>
+                                        <td class="text-center align-top">
                                             {{-- Tombol Detail selalu tampil --}}
-                                            <a href="{{ route('cuti.profile', $item->slug) }}" class="btn btn-info btn-sm">
-                                                <i class="bi bi-eye-fill me-1"></i>detail
-                                            </a>
-                                            <form action="{{ route('ajukan.destroy', $item->slug) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('Yakin ingin hapus data ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash3 me-1"></i>hapus
-                                                </button>
-                                            </form>
+                                            <div class="d-flex flex-column gap-2">
+                                                <a href="{{ route('cuti.profile', $item->slug) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="bi bi-eye-fill me-1"></i>detail
+                                                </a>
+                                                <a href="{{ route('cuti.unduh.pdf', $item->slug) }}"
+                                                    class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-download"></i> PDF
+                                                </a>
+                                            </div>
+
+                                            {{-- <form action="{{ route('ajukan.destroy', $item->slug) }}" method="POST"
+                            class="d-inline" onsubmit="return confirm('Yakin ingin hapus data ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash3 me-1"></i>hapus
+                            </button>
+                        </form> --}}
 
                                             @if (Auth::user()->role && (Auth::user()->role->id == 1 || Auth::user()->role->id == 2))
                                                 <a href="{{ route('cuti.disetujui', $item->slug) }}"
@@ -141,8 +164,6 @@
                                                     <i class="bi bi-pencil-square me-1"></i>Edit
                                                 </button>
                                             @endif
-
-
                                         </td>
                                     </tr>
 
@@ -183,7 +204,7 @@
                                                                             Cuti Menikah</option>
                                                                         <option value="Cuti Istri Melahirkan"
                                                                             {{ $item->jenis_cuti == 'Cuti Istri Melahirkan' ? 'selected' : '' }}>
-                                                                            Cuti Istri Melahirkan</option>
+                                                                            Cuti Melahirkan</option>
                                                                         <option value="Cuti Kematian"
                                                                             {{ $item->jenis_cuti == 'Cuti Kematian' ? 'selected' : '' }}>
                                                                             Cuti Kematian</option>
@@ -195,7 +216,6 @@
                                                                             Cuti Tanpa Gaji</option>
                                                                     </select>
                                                                 </div>
-
                                                                 <div class="mb-3">
                                                                     <label for="tanggal_mulai" class="form-label">Tanggal
                                                                         Mulai</label>
@@ -204,7 +224,6 @@
                                                                         value="{{ $item->tanggal_mulai }}" required>
                                                                 </div>
                                                             </div>
-
                                                             <!-- Kolom kanan -->
                                                             <div class="col-md-6">
                                                                 <div class="mb-3">
@@ -214,29 +233,22 @@
                                                                         name="tanggal_akhir"
                                                                         value="{{ $item->tanggal_akhir }}" required>
                                                                 </div>
-
-                                                                <div class="mb-3">
-                                                                    <label for="alasan"
-                                                                        class="form-label">Alasan</label>
-                                                                    <textarea class="form-control" name="alasan" required>{{ $item->alasan }}</textarea>
-                                                                </div>
-
-                                                                <div class="mb-3">
-                                                                    <label for="email" class="form-label">Email</label>
-                                                                    <input type="email" class="form-control"
-                                                                        name="email" value="{{ $item->email }}"
-                                                                        required>
-                                                                </div>
+                                                                {{-- <div class="mb-3">
+                                                <label for="alasan" class="form-label">Alasan</label>
+                                                <textarea class="form-control" name="alasan" required>{{ $item->alasan }}</textarea>
+                                            </div> --}}
+                                                                {{-- <div class="mb-3">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" name="email" value="{{ $item->email }}" required>
+                                            </div> --}}
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Update</button>
                                                     </div>
-
                                                 </form>
                                             </div>
                                         </div>
@@ -244,20 +256,20 @@
                                 @endforeach
                             </tbody>
                         </table>
-
                     </div>
+
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Modal Tambah BPJS Kesehatan -->
+    <!-- Modal Tambah cuti -->
     <div class="modal fade" id="tambahCuti" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="tambahCutiLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> <!-- modal-lg untuk ukuran lebih lebar -->
             <div class="modal-content">
-                <form action="{{ route('cuti.store') }}" method="POST">
+                <form action="{{ route('cuti.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="tambahCutiLabel">Tambah Data Cuti</h5>
@@ -265,24 +277,22 @@
                     </div>
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="user_id" class="form-label">User</label>
-                                <input type="text" name="user_id" class="form-control"
-                                    value="{{ Auth::user()->id }}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="user_id" class="form-label">Nama Karyawan</label>
-                                <select class="form-select" name="id_karyawan" id="id_karyawan" required>
-                                    <option value="">-- Pilih Karyawan --</option>
+                            <div class="col-md-12">
+                                <label for="nik" class="form-label">Nama Karyawan</label>
+                                <select name="nik" class="form-select" required>
                                     @foreach ($karyawans as $karyawan)
-                                        <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
+                                        @if ($karyawan->nik == Auth::user()->nik)
+                                            <option value="{{ $karyawan->nik }}" selected>{{ $karyawan->nama }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
+                                @error('nik')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
-
                             <div class="col-md-6">
                                 <label for="jenis_cuti" class="form-label">Jenis Cuti</label>
-                                <select name="jenis_cuti" class="form-select" name="jenis_cuti" required>
+                                <select name="jenis_cuti" class="form-select" required>
                                     <option value="">-- Pilih Jenis Cuti --</option>
                                     <option value="Cuti Tahunan">Cuti Tahunan</option>
                                     <option value="Cuti Sakit">Cuti Sakit</option>
@@ -296,26 +306,28 @@
                                     <option value="Cuti Tanpa Gaji">Cuti Tanpa Gaji</option>
                                 </select>
                             </div>
+
                             <div class="col-md-6">
                                 <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control" name="tanggal_mulai" id="tanggal_mulai"
-                                    required>
+                                <input type="date" class="form-control" name="tanggal_mulai" required>
                             </div>
+
                             <div class="col-md-6">
                                 <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
-                                <input type="date" class="form-control" name="tanggal_akhir" id="tanggal_akhir"
-                                    required>
+                                <input type="date" class="form-control" name="tanggal_akhir" required>
                             </div>
+
                             <div class="col-md-6">
-                                <label for="email" class="form-label">Email Pemohon</label>
-                                <input type="email" class="form-control" name="email" id="email" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="alasan" class="form-label">Alasan</label>
-                                <textarea class="form-control" name="alasan" id="alasan" rows="3" required></textarea>
+                                <label for="lampiran" class="form-label">Lampiran</label>
+                                <input type="file" name="lampiran" class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                @error('lampiran')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-circle me-1"></i> Close

@@ -6,64 +6,85 @@ use App\Models\Cuti;
 use App\Models\Karyawan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CutiController extends Controller
 {
-    public function index()
-    {
-        $karyawans = Karyawan::select('id', 'nama')->get();
-        $cutis = Cuti::with(['karyawan:id,nama,slug'])->get();
+    public function index(Request $request)
+{
+    $karyawans = Karyawan::select('nik', 'nama')->get();
+    $search = $request->search;
 
-        return view('Pages.Cuti', compact('cutis', 'karyawans'));
+    // Hitung jumlah cuti total
+    $jumlahCuti = Cuti::count();
+
+    // Query dasar
+    $query = Cuti::with('karyawan');
+
+    // Tambahkan filter jika ada keyword pencarian
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('karyawan', function ($q2) use ($search) {
+                $q2->where('nama', 'like', '%' . $search . '%')
+                   ->orWhere('nik', 'like', '%' . $search . '%');
+            })
+            ->orWhere('jenis_cuti', 'like', '%' . $search . '%')
+            ->orWhere('status', 'like', '%' . $search . '%');
+        });
     }
+
+    // Filter berdasarkan role
+    if (auth()->user()->role && in_array(auth()->user()->role->id, [1, 2])) {
+        $cutis = $query->get();
+    } else {
+        $cutis = $query->where('user_nik', auth()->user()->nik)->get();
+    }
+
+    return view('Pages.Cuti', compact('cutis', 'karyawans', 'jumlahCuti'));
+}
+
 
     public function profile($slug)
     {
-        $cuti = Cuti::with('karyawan')->where('slug', $slug)->firstOrFail();
+        $cuti = Cuti::with(['karyawan.jabatan'])->where('slug', $slug)->firstOrFail();
+        $user = auth()->user();
 
-        return view('Pages.Karyawan-Profile', compact('cuti'));
+        if ($user->role && in_array($user->role->id, [1, 2]) || $cuti->user_id === $user->id) {
+            return view('Pages.Karyawan-Profile', compact('cuti'));
+        }
+
+        abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'id_karyawan'     => 'required|exists:karyawans,id',
-            'user_id'         => 'required|exists:users,id',
-            'jenis_cuti'      => 'required|string|max:255',
-            'tanggal_mulai'   => 'required|date',
-            'tanggal_akhir'   => 'required|date|after_or_equal:tanggal_mulai',
-            'alasan'          => 'required|string',
-            'email'           => 'required|email|max:100',
-            'status'          => 'nullable|in:ditolak,proses,diterima',
-        ], [
-            'id_karyawan.required'     => 'Nama karyawan wajib diisi.',
-            'id_karyawan.exists'       => 'Karyawan yang dipilih tidak ditemukan.',
-            'jenis_cuti.required'      => 'Jenis cuti wajib diisi.',
-            'jenis_cuti.string'        => 'Jenis cuti harus berupa teks.',
-            'jenis_cuti.max'           => 'Jenis cuti tidak boleh lebih dari :max karakter.',
-            'tanggal_mulai.required'  => 'Tanggal mulai wajib diisi.',
-            'tanggal_mulai.date'      => 'Tanggal mulai harus berupa tanggal yang valid.',
-            'tanggal_akhir.required'  => 'Tanggal akhir wajib diisi.',
-            'tanggal_akhir.date'      => 'Tanggal akhir harus berupa tanggal yang valid.',
-            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus sama atau setelah tanggal mulai.',
-            'alasan.required'          => 'Alasan cuti wajib diisi.',
-            'alasan.string'            => 'Alasan harus berupa teks.',
-            'email.required'           => 'Email pemohon wajib diisi.',
-            'email.email'              => 'Format email tidak valid.',
-            'email.max'                => 'Email tidak boleh lebih dari :max karakter.',
-            'status.in'                => 'Status hanya boleh salah satu dari: ditolak, proses, diterima.',
-        ]);
+{
+    $request->validate([
+        'nik' => 'required|exists:karyawans,nik',
+        'jenis_cuti' => 'required|string',
+        'tanggal_mulai' => 'required|date',
+        'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
+        'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
 
-        $validated['status'] = $validated['status'] ?? 'proses';
-
-        $karyawan = Karyawan::findOrFail($validated['id_karyawan']);
-        $slug = Str::slug($karyawan->nama) . '-' . Str::random(6);
-        $validated['slug'] = $slug;
-
-        Cuti::create($validated);
-
-        return redirect()->back()->with('success', 'Data cuti berhasil ditambahkan.');
+    $lampiranPath = null;
+    if ($request->hasFile('lampiran')) {
+        $path = $request->file('lampiran')->store('lampiran_cuti', 'public');
+        $lampiranPath = basename($path); // hanya nama file
     }
+
+    $cuti = new Cuti();
+    $cuti->slug = Str::uuid();
+    $cuti->nik = $request->nik;
+    $cuti->user_nik = $request->nik; // atau sesuai logika kamu
+    $cuti->jenis_cuti = $request->jenis_cuti;
+    $cuti->tanggal_mulai = $request->tanggal_mulai;
+    $cuti->tanggal_akhir = $request->tanggal_akhir;
+    $cuti->lampiran = $lampiranPath;
+    $cuti->status = 'proses';
+    $cuti->save(); // ✅ pastikan ini pakai titik koma
+
+    return redirect()->back()->with('success', 'Data cuti berhasil ditambahkan.');
+}
 
 
     public function update(Request $request, $slug)
@@ -71,56 +92,34 @@ class CutiController extends Controller
         $cuti = Cuti::where('slug', $slug)->firstOrFail();
 
         $validated = $request->validate([
-            'id_karyawan'     => 'required|exists:karyawans,id',
-            'jenis_cuti'      => 'required|string|max:255',
-            'tanggal_mulai'   => 'required|date',
-            'tanggal_akhir'   => 'required|date|after_or_equal:tanggal_mulai',
-            'alasan'          => 'required|string',
-            'email'           => 'required|email|max:100',
-            'status'          => 'nullable|in:ditolak,proses,diterima',
-        ], [
-            'id_karyawan.required'        => 'Nama karyawan wajib dipilih.',
-            'id_karyawan.exists'          => 'Karyawan yang dipilih tidak valid.',
-
-            'jenis_cuti.required'         => 'Jenis cuti wajib diisi.',
-            'jenis_cuti.string'           => 'Jenis cuti harus berupa teks.',
-            'jenis_cuti.max'              => 'Jenis cuti maksimal 255 karakter.',
-
-            'tanggal_mulai.required'      => 'Tanggal mulai wajib diisi.',
-            'tanggal_mulai.date'          => 'Tanggal mulai harus berupa tanggal yang valid.',
-
-            'tanggal_akhir.required'      => 'Tanggal akhir wajib diisi.',
-            'tanggal_akhir.date'          => 'Tanggal akhir harus berupa tanggal yang valid.',
-            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus sama atau setelah tanggal mulai.',
-
-            'alasan.required'             => 'Alasan cuti wajib diisi.',
-            'alasan.string'               => 'Alasan harus berupa teks.',
-
-            'email.required'              => 'Email wajib diisi.',
-            'email.email'                 => 'Format email tidak valid.',
-            'email.max'                   => 'Email maksimal 100 karakter.',
-
-            'status.in'                   => 'Status hanya boleh: ditolak, proses, atau diterima.',
+            'user_nik' => 'required|exists:karyawans,nik',
+            'jenis_cuti' => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
+            'status' => 'nullable|in:ditolak,proses,diterima',
         ]);
 
-        $validated['status'] = $validated['status'] ?? 'proses';
-
-        if ($cuti->id_karyawan != $validated['id_karyawan']) {
-            $karyawan = Karyawan::findOrFail($validated['id_karyawan']);
-            $slug = Str::slug($karyawan->nama) . '-' . Str::random(6);
-            $validated['slug'] = $slug;
+        // Handle file upload saat update
+        if ($request->hasFile('lampiran')) {
+            $validated['lampiran'] = $request->file('lampiran')->store('lampiran_cuti', 'public');
         }
+
+        if ($cuti->user_nik !== $validated['user_nik']) {
+            $karyawan = Karyawan::where('nik', $validated['user_nik'])->firstOrFail();
+            $validated['slug'] = Str::slug($karyawan->nama) . '-' . Str::random(6);
+            $validated['nik'] = $validated['user_nik'];
+        }
+
+        $validated['status'] = $validated['status'] ?? 'proses';
 
         $cuti->update($validated);
 
         return redirect()->back()->with('success', 'Data cuti berhasil diperbarui.');
     }
 
-
     public function destroy($slug)
     {
         $cuti = Cuti::where('slug', $slug)->firstOrFail();
-
         $cuti->delete();
 
         return redirect()->route('cuti')->with('success', 'Data cuti berhasil dihapus.');
@@ -144,4 +143,10 @@ class CutiController extends Controller
         return redirect()->back()->with('success', 'Cuti ditolak.');
     }
 
+    public function unduhPDF($slug)
+    {
+        $cuti = Cuti::where('slug', $slug)->with('karyawan')->firstOrFail();
+        $pdf = Pdf::loadView('Exports.cuti_pdf', compact('cuti'));
+        return $pdf->download('cuti_' . $cuti->slug . '.pdf');
+    }
 }
