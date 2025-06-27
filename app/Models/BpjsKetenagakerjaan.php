@@ -14,9 +14,9 @@ class BpjsKetenagakerjaan extends Model
     protected $table = 'bpjs_ketenagakerjaans';
 
     protected $fillable = [
+        'nik',
         'no_kartu',
         'slug',
-        'nama',
         'kelas_rawat',
         'tanggal_daftar',
         'status_bpjs',
@@ -30,4 +30,9 @@ class BpjsKetenagakerjaan extends Model
             ]
         ];
     }
+    public function karyawan()
+{
+    return $this->belongsTo(Karyawan::class, 'nik', 'nik');
+}
+
 }

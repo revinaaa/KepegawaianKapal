@@ -143,10 +143,17 @@ class CutiController extends Controller
         return redirect()->back()->with('success', 'Cuti ditolak.');
     }
 
-    public function unduhPDF($slug)
-    {
-        $cuti = Cuti::where('slug', $slug)->with('karyawan')->firstOrFail();
-        $pdf = Pdf::loadView('Exports.cuti_pdf', compact('cuti'));
-        return $pdf->download('cuti_' . $cuti->slug . '.pdf');
-    }
+public function unduhPDF($slug)
+{
+    $cuti = Cuti::where('slug', $slug)->with(['karyawan.jabatan'])->firstOrFail();
+
+    $logoPath = public_path('storage/logo/PT_Masada_Jaya_Lines.png');
+    $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+
+    $pdf = Pdf::loadView('Exports.cuti_pdf', compact('cuti', 'logoBase64'))
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download('cuti_' . $cuti->slug . '.pdf');
+}
+
 }

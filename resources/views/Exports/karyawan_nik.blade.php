@@ -58,15 +58,19 @@
 </head>
 <body>
 
-    <div class="kop-surat">
-        <img src="{{ asset('storage/logo/PT_Masada_Jaya_Lines.png') }}" alt="Logo">
-        <div class="kop-text">
-            <h2>PT MASADA JAYA LINES</h2>
-            <p><strong>SIUPAL No.:</strong> BXXV 440 / AL-58</p>
-            <p>Jl Kapten Pierre Tendean No.174 RT.014 Kel. Seberang Mesjid Kec. Banjarmasin Tengah</p>
-            <p>Kota Banjarmasin 70231 - Tel. +62511 3261257</p>
-        </div>
-    </div>
+<table width="100%" style="border-bottom: 2px solid #000; margin-bottom: 20px; padding-bottom: 10px;">
+    <tr>
+        <td style="width: 80px;">
+            <img src="{{ $logoBase64 }}" alt="Logo" style="width: 80px;">
+        </td>
+        <td style="text-align: left;">
+            <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">PT MASADA JAYA LINES</h2>
+            <p style="margin: 2px 0; font-size: 12px;"><strong>SIUPAL No.:</strong> BXXV 440 / AL-58</p>
+            <p style="margin: 2px 0; font-size: 12px;">Jl Kapten Pierre Tendean No.174 RT.014 Kel. Seberang Mesjid Kec. Banjarmasin Tengah</p>
+            <p style="margin: 2px 0; font-size: 12px;">Kota Banjarmasin 70231 - Tel. +62511 3261257</p>
+        </td>
+    </tr>
+</table>
 
     <h4>Informasi Akun & Pribadi</h4>
 @if ($karyawan->foto)
@@ -127,25 +131,6 @@
     <tr><th>Nama Anak Ketiga</th><td>{{ $karyawan->nama_anak_ketiga ?? '-' }}</td></tr>
     <tr><th>NIK Anak Ketiga</th><td>{{ $karyawan->nik_anak_ketiga ?? '-' }}</td></tr>
 </table>
-
-
-    <h4>BPJS Kesehatan</h4>
-    <table>
-        <tr><th>No Kartu</th><td>{{ $karyawan->no_kartu ?? '-' }}</td></tr>
-        <tr><th>Nama Peserta</th><td>{{ $karyawan->nama ?? '-' }}</td></tr>
-        <tr><th>Kelas Rawat</th><td>{{ $karyawan->kelas_rawat ?? '-' }}</td></tr>
-        <tr><th>Tanggal Daftar</th><td>{{ $karyawan->tanggal_daftar ?? '-' }}</td></tr>
-        <tr><th>Status</th><td>{{ $karyawan->status ?? '-' }}</td></tr>
-    </table>
-
-    <h4>BPJS Ketenagakerjaan</h4>
-    <table>
-        <tr><th>No Kartu</th><td>{{ $karyawan->no_kartu ?? '-' }}</td></tr>
-        <tr><th>Nama Peserta</th><td>{{ $karyawan->nama ?? '-' }}</td></tr>
-        <tr><th>Kelas Rawat</th><td>{{ $karyawan->kelas_rawat ?? '-' }}</td></tr>
-        <tr><th>Tanggal Daftar</th><td>{{ $karyawan->tanggal_daftar ?? '-' }}</td></tr>
-        <tr><th>Status</th><td>{{ $karyawan->status ?? '-' }}</td></tr>
-    </table>
 
 </body>
 </html>

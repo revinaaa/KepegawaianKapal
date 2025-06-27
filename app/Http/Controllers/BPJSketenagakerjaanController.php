@@ -5,81 +5,85 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\BpjsKetenagakerjaan;
+use App\Models\Karyawan; // <== Tambahkan ini!
 
 class BPJSketenagakerjaanController extends Controller
 {
-    public function index()
-    {
-        $bpjsketanagakerjaan = BpjsKetenagakerjaan::all();
+public function index(Request $request)
+{
+    $search = $request->input('search');
 
-        return view('Pages.BpjsKetanagaKerjaan', compact('bpjsketanagakerjaan'));
-    }
+    $bpjsKetenagakerjaan = BpjsKetenagakerjaan::with('karyawan')
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('karyawan', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%");
+            });
+        })
+        ->get();
+
+    $karyawans = Karyawan::select('nik', 'nama')->orderBy('nama')->get();
+
+    return view('Pages.BPJSKetenagakerjaan', compact('bpjsKetenagakerjaan', 'karyawans', 'search'));
+}
+
 
     public function store(Request $request)
     {
         $request->validate([
+            'nik' => 'required|exists:karyawans,nik',
             'no_kartu' => 'required|string|max:50|unique:bpjs_ketenagakerjaans,no_kartu',
-            'nama' => 'required|string|max:255',
             'kelas_rawat' => 'required|in:Kelas 1,Kelas 2,Kelas 3',
             'tanggal_daftar' => 'required|date',
             'status_bpjs' => 'required|in:Aktif,Nonaktif',
-        ], [
-            'no_kartu.required' => 'Nomor kartu wajib diisi.',
-            'no_kartu.unique' => 'Nomor kartu sudah terdaftar.',
-            'nama.required' => 'Nama wajib diisi.',
-            'kelas_rawat.required' => 'Kelas rawat wajib dipilih.',
-            'tanggal_daftar.required' => 'Tanggal daftar wajib diisi.',
-            'status_bpjs.required' => 'Status BPJS wajib dipilih.',
         ]);
 
+        $karyawan = Karyawan::where('nik', $request->nik)->first();
+
         BpjsKetenagakerjaan::create([
+            'nik' => $request->nik,
             'no_kartu' => $request->no_kartu,
-            'nama' => $request->nama,
+            'slug' => Str::slug($karyawan->nama . '-' . uniqid()),
+            'nama' => $karyawan->nama,
             'kelas_rawat' => $request->kelas_rawat,
             'tanggal_daftar' => $request->tanggal_daftar,
             'status_bpjs' => $request->status_bpjs,
         ]);
 
-        return redirect()->back()->with('success', 'Data BPJS Ketenaga Kerjaan berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Data BPJS Ketenagakerjaan berhasil ditambahkan.');
     }
 
     public function update(Request $request, $slug)
     {
         $request->validate([
+            'nik' => 'required|exists:karyawans,nik',
             'no_kartu' => 'required|string|max:50',
-            'nama' => 'required|string|max:255',
             'kelas_rawat' => 'required|in:Kelas 1,Kelas 2,Kelas 3',
             'tanggal_daftar' => 'required|date',
             'status_bpjs' => 'required|in:Aktif,Nonaktif',
-        ], [
-            'no_kartu.required' => 'Nomor kartu wajib diisi.',
-            'nama.required' => 'Nama wajib diisi.',
-            'kelas_rawat.required' => 'Kelas rawat wajib dipilih.',
-            'tanggal_daftar.required' => 'Tanggal daftar wajib diisi.',
-            'status_bpjs.required' => 'Status BPJS wajib dipilih.',
         ]);
 
         $bpjs = BpjsKetenagakerjaan::where('slug', $slug)->firstOrFail();
+        $karyawan = Karyawan::where('nik', $request->nik)->first();
 
         $bpjs->update([
+            'nik' => $request->nik,
             'no_kartu' => $request->no_kartu,
-            'slug' => Str::slug($request->nama . '' . uniqid()),
-            'nama' => $request->nama,
+            'slug' => Str::slug($karyawan->nama . '-' . uniqid()),
+            'nama' => $karyawan->nama,
             'kelas_rawat' => $request->kelas_rawat,
             'tanggal_daftar' => $request->tanggal_daftar,
             'status_bpjs' => $request->status_bpjs,
         ]);
 
-        return redirect()->back()->with('success', 'Data BPJS Ketenaga Kerjaan berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data BPJS Ketenagakerjaan berhasil diperbarui.');
     }
 
-    
     public function destroy($slug)
     {
         $bpjs = BpjsKetenagakerjaan::where('slug', $slug)->firstOrFail();
-
         $bpjs->delete();
 
-        return redirect()->back()->with('success', 'Data BPJS Ketenaga Kerja berhasil dihapus.');
+        return redirect()->back()->with('success', 'Data BPJS Ketenagakerjaan berhasil dihapus.');
     }
 }

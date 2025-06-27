@@ -47,11 +47,9 @@
                     {{-- Judul --}}
                     <h5 class="card-title fw-semibold mb-4">List Cuti</h5>
 
-                    {{-- Form Search --}}
                     <form action="{{ route('cuti') }}" method="GET" class="mb-4">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control"
-                                placeholder="Search here ..."
+                            <input type="text" name="search" class="form-control" placeholder="Search here ..."
                                 value="{{ request('search') }}">
                             <button class="btn btn-success" type="submit">
                                 <i class="bi bi-search"></i> Cari
@@ -61,6 +59,15 @@
                             @endif
                         </div>
                     </form>
+
+                    @if ($cutis->isEmpty() && request('search'))
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Tidak ditemukan pengajuan cuti dengan kata:
+                            <strong>"{{ request('search') }}"</strong>
+                        </div>
+                    @endif
+
 
                     {{-- Tabel --}}
                     <div class="table-responsive">
@@ -111,6 +118,9 @@
                                                 {{ $item->user ? $item->user->name : 'Tidak ada user' }}</h6>
                                         </td>
                                         <td>
+                                            <h6 class="fw-semibold mb-1">{{ $item->nik }}</h6>
+                                        </td>
+                                        <td>
                                             <h6 class="fw-semibold mb-1">{{ $item->jenis_cuti }}</h6>
                                         </td>
                                         <td>
@@ -143,49 +153,51 @@
                                             </h6>
                                         </td>
                                         <td>
-                                            @if (Auth::user()->role_id == 1)
-                                                @if (in_array($item->status, [null, 'menunggu', 'proses']))
-                                                    <a href="{{ route('cuti.disetujui', $item->slug) }}"
-                                                        class="btn btn-success btn-sm mb-1">
-                                                        <i class="bi bi-check2-all me-1"></i> Disetujui
-                                                    </a>
-                                                    <a href="{{ route('cuti.ditolak', $item->slug) }}"
-                                                        class="btn btn-warning btn-sm mb-1">
-                                                        <i class="bi bi-person-x me-1"></i> Ditolak
-                                                    </a>
-                                                @elseif ($item->status === 'diterima')
-                                                    <span class="badge bg-success d-block mb-1">Sudah Disetujui</span>
-                                                @elseif ($item->status === 'ditolak')
-                                                    <span class="badge bg-danger d-block mb-1">Sudah Ditolak</span>
-                                                @endif
-                                            @endif
+    {{-- Baris 1: Disetujui dan Ditolak --}}
+    @if (Auth::user()->role_id == 1 && in_array($item->status, [null, 'menunggu', 'proses']))
+        <div class="d-flex gap-1 mb-2">
+            <a href="{{ route('cuti.disetujui', $item->slug) }}" class="btn btn-success btn-sm">
+                <i class="bi bi-check2-all me-1"></i> Disetujui
+            </a>
+            <a href="{{ route('cuti.ditolak', $item->slug) }}" class="btn btn-warning btn-sm">
+                <i class="bi bi-person-x me-1"></i> Ditolak
+            </a>
+        </div>
+    @elseif ($item->status === 'diterima')
+        <span class="badge bg-success d-block mb-2">Sudah Disetujui</span>
+    @elseif ($item->status === 'ditolak')
+        <span class="badge bg-danger d-block mb-2">Sudah Ditolak</span>
+    @endif
 
-                                            <a href="{{ route('cuti.profile', $item->slug) }}" class="btn btn-info btn-sm">
-                                                <i class="bi bi-eye-fill me-1"></i>detail
-                                            </a>
-                                            <a href="{{ route('cuti.unduh.pdf', $item->slug) }}"
-                                                class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-download"></i> PDF
-                                            </a>
+    {{-- Baris 2: Semua tombol lain menyamping --}}
+    <div class="d-flex flex-wrap gap-1">
+        <a href="{{ route('cuti.profile', $item->slug) }}" class="btn btn-info btn-sm">
+            <i class="bi bi-eye-fill me-1"></i> Detail
+        </a>
+        <a href="{{ route('cuti.unduh.pdf', $item->slug) }}" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-download me-1"></i> PDF
+        </a>
 
-                                            @if (in_array(Auth::user()->role_id, [1]))
-                                                <button type="button" class="btn btn-success btn-sm mb-1"
-                                                    data-bs-toggle="modal" data-bs-target="#editCuti{{ $item->slug }}">
-                                                    <i class="bi bi-pencil-square me-1"></i> Edit
-                                                </button>
+        @if (Auth::user()->role_id == 1)
+            <button type="button" class="btn btn-success btn-sm"
+                data-bs-toggle="modal" data-bs-target="#editCuti{{ $item->slug }}">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+            </button>
 
-                                                <form id="form-hapus-cuti-{{ $item->id }}"
-                                                    action="{{ route('cuti.destroy', $item->slug) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-danger btn-sm mb-1"
-                                                        onclick="hapusCuti('{{ $item->id }}')">
-                                                        <i class="bi bi-trash"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
+            <form id="form-hapus-cuti-{{ $item->id }}" action="{{ route('cuti.destroy', $item->slug) }}"
+                method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-danger btn-sm"
+                    onclick="hapusCuti('{{ $item->id }}')">
+                    <i class="bi bi-trash me-1"></i> Hapus
+                </button>
+            </form>
+        @endif
+    </div>
+</td>
+
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -197,83 +209,88 @@
         </div>
     </div>
     <!-- cuti -->
-<div class="modal fade" id="tambahCuti" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="tambahCutiLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('cuti.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tambahCutiLabel">Tambah Data Cuti</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <!-- Pilih karyawan -->
-                        <div class="col-md-12">
-                            <label for="nik" class="form-label">Nama Karyawan</label>
-                            <select name="nik" class="form-select" required>
-                                <option value="">-- Pilih Karyawan --</option>
-                                @foreach ($karyawans as $karyawan)
-                                    <option value="{{ $karyawan->nik }}">{{ $karyawan->nama }} - {{ $karyawan->nik }}</option>
-                                @endforeach
-                            </select>
-                            @error('nik')
-                                <div class="text-danger small">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <!-- Jenis Cuti -->
-                        <div class="col-md-6">
-                            <label for="jenis_cuti" class="form-label">Jenis Cuti</label>
-                            <select name="jenis_cuti" class="form-select" required>
-                                <option value="">-- Pilih Jenis Cuti --</option>
-                                <option value="Cuti Tahunan">Cuti Tahunan</option>
-                                <option value="Cuti Sakit">Cuti Sakit</option>
-                                <option value="Cuti Melahirkan">Cuti Melahirkan</option>
-                                <option value="Cuti Haid">Cuti Haid</option>
-                                <option value="Cuti Besar">Cuti Besar</option>
-                                <option value="Cuti Menikah">Cuti Menikah</option>
-                                <option value="Cuti Istri Melahirkan">Cuti Istri Melahirkan</option>
-                                <option value="Cuti Kematian">Cuti Kematian</option>
-                                <option value="Cuti Keagamaan">Cuti Keagamaan</option>
-                                <option value="Cuti Tanpa Gaji">Cuti Tanpa Gaji</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                            <input type="date" class="form-control" name="tanggal_mulai" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
-                            <input type="date" class="form-control" name="tanggal_akhir" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="lampiran" class="form-label">Lampiran</label>
-                            <input type="file" name="lampiran" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-                            @error('lampiran')
-                                <div class="text-danger small">{{ $message }}</div>
-                            @enderror
+    <div class="modal fade" id="tambahCuti" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="tambahCutiLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="{{ route('cuti.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tambahCutiLabel">Tambah Data Cuti</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Pilih karyawan -->
+                            <div class="col-md-6">
+                                <label for="nik" class="form-label">Nama Karyawan</label>
+                                <select name="nik" class="form-select select-nik" required>
+                                    <option value="">-- Pilih Karyawan --</option>
+                                    @foreach ($karyawans as $karyawan)
+                                        <option value="{{ $karyawan->nik }}">{{ $karyawan->nama }} -
+                                            {{ $karyawan->nik }}</option>
+                                    @endforeach
+                                </select>
+                                @error('nik')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Jenis Cuti -->
+                            <div class="col-md-6">
+                                <label for="jenis_cuti" class="form-label">Jenis Cuti</label>
+                                <select name="jenis_cuti" class="form-select" required>
+                                    <option value="">-- Pilih Jenis Cuti --</option>
+                                    <option value="Cuti Tahunan">Cuti Tahunan</option>
+                                    <option value="Cuti Sakit">Cuti Sakit</option>
+                                    <option value="Cuti Melahirkan">Cuti Perjalanan Dinas</option>
+                                    <option value="Cuti Besar">Cuti Besar</option>
+                                    <option value="Cuti Menikah">Cuti Menikah</option>
+                                    <option value="Cuti Istri Melahirkan">Cuti Istri Melahirkan</option>
+                                    <option value="Cuti Keagamaan">Cuti Khitanan Anak</option>
+                                    <option value="Cuti Keagamaan">Cuti Baptis Anak</option>
+                                    <option value="Cuti Kematian">Cuti Kematian</option>
+                                    <option value="Cuti Keagamaan">Cuti Keagamaan</option>
+                                    <option value="Cuti Tanpa Gaji">Cuti Tanpa Gaji</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" name="tanggal_mulai" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
+                                <input type="date" class="form-control" name="tanggal_akhir" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lampiran" class="form-label">Lampiran</label>
+                                <input type="file" name="lampiran" class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                @error('lampiran')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i> Close
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-bookmark-check-fill me-1"></i> Simpan
-                    </button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i> Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-bookmark-check-fill me-1"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 
 @endsection
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         function hapusCuti(id) {
             Swal.fire({
@@ -291,16 +308,13 @@
                 }
             });
         }
-    </script>
-    {{-- @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                showConfirmButton: false
+        $(document).ready(function() {
+            // Select2 untuk modal tambah cuti
+            $('#tambahCuti .select-nik').select2({
+                dropdownParent: $('#tambahCuti'),
+                placeholder: "-- Pilih Karyawan --",
+                width: '100%'
             });
-        </script>
-    @endif --}}
+        });
+    </script>
 @endsection

@@ -6,22 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('bpjs_kesehatans', function (Blueprint $table) {
-            $table->id();
-            $table->string('no_kartu', 50)->unique();
-            $table->string('slug', 255)->nullable();
-            $table->string('nama', 255)->nullable();
-            $table->string('kelas_rawat', 255)->nullable();
-            $table->date('tanggal_daftar')->nullable();
-            $table->string('status_bpjs', 100)->nullable();
-            $table->timestamps();
-        });
-    }
+  public function up(): void
+{
+    Schema::create('bpjs_kesehatans', function (Blueprint $table) {
+        $table->id();
+        $table->string('nik'); // foreign key ke karyawans
+        $table->string('no_kartu')->unique();
+        $table->string('slug')->unique();
+        $table->string('kelas_rawat');
+        $table->date('tanggal_daftar');
+        $table->string('status_bpjs');
+        $table->timestamps();
+
+        $table->foreign('nik')->references('nik')->on('karyawans')->onDelete('cascade');
+        
+    });
+}
+
 
     /**
      * Reverse the migrations.

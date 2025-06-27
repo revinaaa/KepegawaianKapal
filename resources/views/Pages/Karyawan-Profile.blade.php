@@ -27,44 +27,38 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .social-icons a {
-            color: #495057;
-            font-size: 20px;
-            margin: 0 10px;
-            transition: 0.3s;
+        .info-table td {
+            padding: 8px 10px;
+            vertical-align: top;
         }
 
-        .social-icons a:hover {
-            color: #0d6efd;
+        .info-table td:first-child {
+            font-weight: 600;
+            width: 160px;
+            color: #495057;
         }
     </style>
 @endsection
 
 @section('content')
     <!-- Header Profile -->
-<div class="profile-header">
-    {{-- Foto karyawan --}}
-    @if (!empty($cuti->karyawan->foto))
-        <img src="{{ asset('storage/cover/' . $cuti->karyawan->foto) }}" alt="Avatar" class="profile-img mb-3">
-    @else
-        <img src="{{ asset('img/foto-tidak-ada.png') }}" alt="No Avatar" class="profile-img mb-3">
-    @endif
+    <div class="profile-header">
+        <div>
+            @if (!empty($cuti->karyawan->foto))
+                <img src="{{ asset('storage/cover/' . $cuti->karyawan->foto) }}" alt="Avatar" class="profile-img mb-3">
+            @else
+                <img src="{{ asset('img/foto-tidak-ada.png') }}" alt="No Avatar" class="profile-img mb-3">
+            @endif
 
-   <h2 class="text-white">
-    {{ $cuti->karyawan->nama ?? '-' }}
-</h2>
-
-<p class="lead">
-    {{ $cuti->karyawan->jabatan->nama ?? '-' }}
-</p>
-</div>
-
-
+            <h2 class="text-white">{{ $cuti->karyawan->nama ?? '-' }}</h2>
+            <p class="lead">{{ $cuti->karyawan->jabatan->nama ?? '-' }}</p>
+        </div>
+    </div>
 
     <!-- Info Detail -->
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <!-- Kartu Deskripsi -->
+            <!-- Aksi -->
             <div class="col-md-8">
                 <div class="card p-4 mb-4">
                     @if (session('success'))
@@ -74,43 +68,71 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    <h5>Alasan</h5>
-                    <p>
-                        {{ $cuti->alasan }}
-                    </p>
 
-                    <!-- Tombol Aksi -->
-                    
-                     {{-- @if (in_array(Auth::user()->role_id, [1]))
-                                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#editCuti{{ $cuti->slug }}">
-                                                    <i class="bi bi-pencil-square me-1"></i>Edit
-                                                </button>
-                                                <form id="form-hapus-cuti-{{ $cuti->id }}"
-                                                    action="{{ route('cuti.destroy', $cuti->slug) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        onclick="hapusCuti('{{ $cuti->id }}')">
-                                                        <i class="bi bi-trash"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            @endif --}}
+                    @if (in_array(Auth::user()->role_id, [1]))
+                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editCuti{{ $cuti->slug }}">
+                            <i class="bi bi-pencil-square me-1"></i> Edit
+                        </button>
+
+                        <form id="form-hapus-cuti-{{ $cuti->id }}"
+                            action="{{ route('cuti.destroy', $cuti->slug) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-danger btn-sm" onclick="hapusCuti('{{ $cuti->id }}')">
+                                <i class="bi bi-trash"></i> Hapus
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
 
-            <!-- Kartu Kontak -->
-            <div class="col-md-4">
-                <div class="card p-4 mb-4">
-                    <h5>About</h5>
-                    <ul class="list-unstyled mb-2">
-                        <li><strong>Jenis Cuti: </strong>{{ $cuti->jenis_cuti }}</li>
-                        <li><strong>Tangal Cuti: </strong>{{ $cuti->tanggal_mulai }} Sampai {{ $cuti->tanggal_akhir }}</li>
-                        <li><strong>Email:</strong>{{ $cuti->email }}</li>
-                    </ul>
-                </div>
-            </div>
+            <!-- Detail Cuti -->
+<div class="col-md-8">
+    <div class="card p-4 mb-4 position-relative">
+        <h5 class="mb-3">Pengajuan Cuti Anda</h5>
+        <table class="table borderless info-table mb-0">
+            <tr>
+                <td>Jenis Cuti</td>
+                <td>: {{ $cuti->jenis_cuti }}</td>
+            </tr>
+            <tr>
+                <td>Tanggal Cuti</td>
+                <td>: {{ $cuti->tanggal_mulai }} sampai {{ $cuti->tanggal_akhir }}</td>
+            </tr>
+            {{-- <tr>
+                <td>Email</td>
+                <td>: {{ $cuti->email }}</td>
+            </tr> --}}
+            <tr>
+                <td>Status</td>
+                <td>: 
+                    <span class="badge 
+                        {{ $cuti->status == 'diterima' ? 'bg-success' : ($cuti->status == 'ditolak' ? 'bg-danger' : 'bg-warning') }}">
+                        {{ ucfirst($cuti->status) }}
+                    </span>
+                </td>
+            </tr>
+            @if ($cuti->lampiran)
+                <tr>
+                    <td>Lampiran</td>
+                    <td>: 
+                        <a href="{{ route('lihat.lampiran', $cuti->lampiran) }}" target="_blank" class="btn btn-sm btn-primary">
+                            Lihat
+                        </a>
+                    </td>
+                </tr>
+            @endif
+        </table>
+
+        <!-- Tombol Kembali di kanan atas bawah status -->
+        <div class="text-end mt-3">
+            <a href="{{ route('cuti') }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-left-circle me-1"></i> Kembali
+            </a>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 @endsection

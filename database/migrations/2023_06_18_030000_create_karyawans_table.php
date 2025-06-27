@@ -36,20 +36,8 @@ return new class extends Migration
             $table->string('nik_anak_kedua')->nullable();
             $table->string('nama_anak_ketiga')->nullable();
             $table->string('nik_anak_ketiga')->nullable();
+            $table->enum('status_keluarga', ['Menikah', 'Belum Menikah'])->nullable();
 
-            // BPJS Kesehatan
-            $table->string('no_kartu_kes')->default('');
-            $table->string('nama_kes')->default('');
-            $table->string('kelas_rawat_kes')->default('');
-            $table->date('tanggal_daftar_kes')->nullable();
-            $table->string('status_bpjs_kes')->default('');
-
-            // BPJS Ketenagakerjaan
-            $table->string('no_kartu_kerja')->default('');
-            $table->string('nama_kerja')->default('');
-            $table->string('kelas_rawat_kerja')->default('');
-            $table->date('tanggal_daftar_kerja')->nullable();
-            $table->string('status_bpjs_kerja')->default('');
 
             // Relasi ke tabel users
             $table->string('user_nik')->nullable();

@@ -14,7 +14,7 @@ class UserController extends Controller
     // Tampilkan daftar user
     public function indexUser()
     {
-        $users = User::all();
+        $users = User::with('karyawan')->get();
         return view('Pages.User.index', compact('users'));
     }
 

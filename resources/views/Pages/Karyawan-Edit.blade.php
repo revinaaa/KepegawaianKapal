@@ -131,7 +131,7 @@
                                 <!-- usia -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Usia</label>
-                                    <input type="date" name="usia" class="form-control"
+                                    <input type="number" name="usia" class="form-control"
                                         value="{{ old('usia', $karyawan->usia) }}">
                                 </div>
 
@@ -289,7 +289,7 @@
                                         value="{{ old('nik_anak_ketiga', $karyawan->nik_anak_ketiga) }}">
                                 </div>
 
-                                <hr class="my-4">
+                                {{-- <hr class="my-4">
                                 <h6 class="fw-bold">Data BPJS Kesehatan</h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -329,9 +329,9 @@
                                                 Nonaktif</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <hr class="my-4">
+                                {{-- <hr class="my-4">
                                 <h6 class="fw-bold">Data BPJS Ketenagakerjaan</h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -373,7 +373,7 @@
                                                 Nonaktif</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-12 mt-4">
                                     <button type="submit" class="btn btn-primary me-2">

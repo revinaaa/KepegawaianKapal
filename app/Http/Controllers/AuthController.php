@@ -109,7 +109,7 @@ class AuthController extends Controller
                 'nama_ibu' => $request->nama_ibu,
                 'nik_ibu' => $request->nik_ibu,
                 'pendidikan'=>$request->pendidikan,
-                'status_keluarga'=>$request->status_keluaga,
+                'status_keluarga'=>$request->status_keluarga,
 
                 // Keluarga
                 'nama_istri' => $request->nama_istri,
@@ -121,19 +121,6 @@ class AuthController extends Controller
                 'nama_anak_ketiga' => $request->nama_anak_ketiga,
                 'nik_anak_ketiga' => $request->nik_anak_ketiga,
 
-                // BPJS Kesehatan
-                'no_kartu_bpjs_kesehatan' => $request->no_kartu_bpjs_kesehatan,
-                'nama_peserta_bpjs_kesehatan' => $request->nama_peserta_bpjs_kesehatan,
-                'kelas_rawat_kes' => $request->kelas_rawat,
-                'tanggal_daftar_kes' => $request->tanggal_daftar_bpjs_kesehatan,
-                'status_bpjs_kes' => $request->status_bpjs_kesehatan,
-
-                // BPJS Ketenagakerjaan
-                'no_kartu_bpjs_ketenagakerjaan' => $request->no_kartu_bpjs_ketenagakerjaan,
-                'nama_peserta_bpjs_ketenagakerjaan' => $request->nama_peserta_bpjs_ketenagakerjaan,
-                'kelas_rawat_kerja' => $request->kelas_rawat,
-                'tanggal_daftar_kerja' => $request->tanggal_daftar_bpjs_ketenagakerjaan,
-                'status_bpjs_kerja' => $request->status_bpjs_ketenagakerjaan,
 
                 // Optional lainnya
                 'no_telepon_darurat' => $request->no_telepon_darurat,

@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <div class="row mb-4">
+    <div class="row mb-0">
         <div class="col-md-20">
             <div class="card shadow-sm py-2 px-4 text-start h-8">
                 <p class="text-uppercase fw-semibold text-muted mb-2">Jumlah Pegawai</p>
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3 ">
         <div class="col-lg-12 d-flex align-items-stretch">
             <div class="card w-100">
 
@@ -50,6 +50,7 @@
 
                     {{-- Judul --}}
                     <h5 class="card-title fw-semibold mb-4">List Karyawan</h5>
+                    {{-- Form Search --}}
                     <form action="{{ route('karyawan') }}" method="GET" class="mb-4">
                         <div class="input-group">
                             <input type="text" name="search" class="form-control" placeholder="Search here ..."
@@ -62,6 +63,15 @@
                             @endif
                         </div>
                     </form>
+
+                    {{-- Alert jika data tidak ditemukan --}}
+                    @if ($karyawans->isEmpty() && request('search'))
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Data karyawan tidak ditemukan untuk pencarian:
+                            <strong>"{{ request('search') }}"</strong>
+                        </div>
+                    @endif
 
                     {{-- Tabel --}}
                     <div class="table-responsive">
@@ -109,8 +119,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="btn btn-danger btn-sm btn-delete"
-                                                        data-nik="{{ $item->nik }}"
-                                                        data-slug="{{ $item->slug }}">
+                                                        data-nik="{{ $item->nik }}" data-slug="{{ $item->slug }}">
                                                         Hapus
                                                     </button>
                                                 </form>

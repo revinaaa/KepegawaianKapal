@@ -52,8 +52,8 @@
 
                                 <div class="d-flex align-items-center justify-content-center gap-3">
                                     <a class="text-primary fw-bold" href="{{ route('password.request') }}">Lupa Password?</a>
-                                    <span>|</span>
-                                    <a class="text-primary fw-bold" href="{{ route('registrasi') }}">Buat akun</a>
+                                    {{-- <span>|</span>
+                                    <a class="text-primary fw-bold" href="{{ route('registrasi') }}">Buat akun</a> --}}
                                 </div>
                             </div> <!-- end card-body -->
                         </div> <!-- end card -->

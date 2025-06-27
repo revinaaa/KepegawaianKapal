@@ -14,13 +14,14 @@ class BpjsKesehatan extends Model
     protected $table = 'bpjs_kesehatans';
 
     protected $fillable = [
-        'no_kartu',
-        'slug',
-        'nama',
-        'kelas_rawat',
-        'tanggal_daftar',
-        'status_bpjs',
-    ];
+    'nik', 
+    'no_kartu',
+    'slug',
+    'kelas_rawat',
+    'tanggal_daftar',
+    'status_bpjs',
+];
+
 
 
     public function sluggable(): array
@@ -31,4 +32,9 @@ class BpjsKesehatan extends Model
             ]
         ];
     }
+    public function karyawan()
+{
+    return $this->belongsTo(Karyawan::class, 'nik', 'nik');
+}
+
 }

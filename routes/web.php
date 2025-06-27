@@ -92,17 +92,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/jabatan-update/{slug}', [JabatanController::class, 'update'])->name('jabatan.update');
         Route::delete('/jabatan/{slug}', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
 
-        // // BPJS Kesehatan
-        // Route::get('/list-bjs-kesehatan', [BPJSkesehatanController::class, 'index'])->name('bpjsKesehatan');
-        // Route::post('/bjs-kesehatan-store', [BPJSkesehatanController::class, 'store'])->name('bpjsKesehatan.store');
-        // Route::put('/bjs-kesehatan-update/{slug}', [BPJSkesehatanController::class, 'update'])->name('bpjsKesehatan.update');
-        // Route::delete('/bjs-kesehatan-destroy/{slug}', [BPJSkesehatanController::class, 'destroy'])->name('bpjsKesehatan.destroy');
+        // BPJS Kesehatan
+        Route::get('/list-bjs-kesehatan', [BPJSkesehatanController::class, 'index'])->name('bpjsKesehatan');
+        Route::post('/bjs-kesehatan-store', [BPJSkesehatanController::class, 'store'])->name('bpjsKesehatan.store');
+        Route::put('/bjs-kesehatan-update/{slug}', [BPJSkesehatanController::class, 'update'])->name('bpjsKesehatan.update');
+        Route::delete('/bjs-kesehatan-destroy/{slug}', [BPJSkesehatanController::class, 'destroy'])->name('bpjsKesehatan.destroy');
 
-        // // BPJS Ketenagakerjaan
-        // Route::get('/list-bjs-ketenaga-kerjaan', [BPJSketenagakerjaanController::class, 'index'])->name('bpjs-ketenaga-kerjaan');
-        // Route::post('/bjs-ketenaga-kerjaan-store', [BPJSketenagakerjaanController::class, 'store'])->name('bpjs-ketenaga.store');
-        // Route::put('/bjs-ketenaga-kerjaan-update/{slug}', [BPJSketenagakerjaanController::class, 'update'])->name('bpjs-ketenaga.update');
-        // Route::delete('/bjs-ketenaga-kerjaan-destroy/{slug}', [BPJSketenagakerjaanController::class, 'destroy'])->name('bpjs-ketenaga.destroy');
+        // BPJS Ketenagakerjaan
+        Route::get('/list-bjs-ketenaga-kerjaan', [BPJSketenagakerjaanController::class, 'index'])->name('bpjs-ketenaga-kerjaan');
+        Route::post('/bjs-ketenaga-kerjaan-store', [BPJSketenagakerjaanController::class, 'store'])->name('bpjs-ketenaga.store');
+        Route::put('/bjs-ketenaga-kerjaan-update/{slug}', [BPJSketenagakerjaanController::class, 'update'])->name('bpjs-ketenaga.update');
+        Route::delete('/bjs-ketenaga-kerjaan-destroy/{slug}', [BPJSketenagakerjaanController::class, 'destroy'])->name('bpjs-ketenaga.destroy');
 
         // Karyawan
         Route::get('/karyawan', [KarywanController::class, 'index'])->name('karyawan');

@@ -131,10 +131,10 @@
                                         <td class="text-center align-top">
                                             {{-- Tombol Detail selalu tampil --}}
                                             <div class="d-flex flex-column gap-2">
-                                                <a href="{{ route('cuti.profile', $item->slug) }}"
+                                                {{-- <a href="{{ route('cuti.profile', $item->slug) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="bi bi-eye-fill me-1"></i>detail
-                                                </a>
+                                                </a> --}}
                                                 <a href="{{ route('cuti.unduh.pdf', $item->slug) }}"
                                                     class="btn btn-outline-danger btn-sm">
                                                     <i class="bi bi-download"></i> PDF
@@ -296,11 +296,12 @@
                                     <option value="">-- Pilih Jenis Cuti --</option>
                                     <option value="Cuti Tahunan">Cuti Tahunan</option>
                                     <option value="Cuti Sakit">Cuti Sakit</option>
-                                    <option value="Cuti Melahirkan">Cuti Melahirkan</option>
-                                    <option value="Cuti Haid">Cuti Haid</option>
+                                    <option value="Cuti Melahirkan">Cuti Perjalanan Dinas</option>
                                     <option value="Cuti Besar">Cuti Besar</option>
                                     <option value="Cuti Menikah">Cuti Menikah</option>
                                     <option value="Cuti Istri Melahirkan">Cuti Istri Melahirkan</option>
+                                    <option value="Cuti Keagamaan">Cuti Khitanan Anak</option>
+                                    <option value="Cuti Keagamaan">Cuti Baptis Anak</option>
                                     <option value="Cuti Kematian">Cuti Kematian</option>
                                     <option value="Cuti Keagamaan">Cuti Keagamaan</option>
                                     <option value="Cuti Tanpa Gaji">Cuti Tanpa Gaji</option>

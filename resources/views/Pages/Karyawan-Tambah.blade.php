@@ -206,15 +206,11 @@
                         </div>
                         <!-- Status Keluarga -->
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Status Keluarga</label>
+                            <label for="status_keluarga" class="form-label">Status Keluarga</label>
                             <select name="status_keluarga" class="form-select" required>
-                                <option value="">Pilih</option>
-                                <option value="Menikah"
-                                    {{ old('status_keluarga', $karyawan->status_keluarga ?? '') == 'Menikah' ? 'selected' : '' }}>
-                                    Menikah</option>
-                                <option value="Belum Menikah"
-                                    {{ old('status_keluarga', $karyawan->status_keluarga ?? '') == 'Belum Menikah' ? 'selected' : '' }}>
-                                    Belum Menikah</option>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Menikah">Menikah</option>
+                                <option value="Belum Menikah">Belum Menikah</option>
                             </select>
                         </div>
 
@@ -273,15 +269,20 @@
                             <input type="text" name="nik_anak_ketiga" class="form-control">
                         </div>
 
-                        <hr class="my-4">
+                        {{-- <hr class="my-4">
                         <h6 class="fw-bold">Data BPJS Kesehatan</h6>
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                            <label class="form-label">No Kartu BPJS Kesehatan</label>
+                            <input type="text" name="no_kartu_kes" class="form-control"
+                             value="{{ old('no_kartu_kes', $karyawan->no_kartu_kes ?? '') }}">
+                        </div> --}}
+                        {{-- <div class="col-md-6 mb-3">
                                 <label class="form-label">No Kartu BPJS Kesehatan</label>
                                 <input type="number" name="no_kartu_kes" class="form-control"
                                     value="{{ old('no_kartu_kes', $karyawan->no_kartu_kes ?? '') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
+                            </div> --}}
+                        {{-- <div class="col-md-6 mb-3">
                                 <label class="form-label">Nama Peserta BPJS Kesehatan</label>
                                 <input type="text" name="nama_kes" class="form-control"
                                     value="{{ old('nama_kes', $karyawan->nama_kes ?? '') }}">
@@ -305,8 +306,8 @@
                                 <label class="form-label">Tanggal Daftar BPJS Kesehatan</label>
                                 <input type="date" name="tanggal_daftar_kes" class="form-control"
                                     value="{{ old('tanggal_daftar_kes', $karyawan->tanggal_daftar_kes ?? '') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
+                            </div> --}}
+                        {{-- <div class="col-md-6 mb-3">
                                 <label class="form-label">Status BPJS Kesehatan</label>
                                 <select name="status_bpjs_kes" class="form-select">
                                     <option value="">-- Pilih Status --</option>
@@ -317,9 +318,9 @@
                                         {{ old('status_bpjs_kes', $karyawan->status_bpjs_kes ?? '') == 'Nonaktif' ? 'selected' : '' }}>
                                         Nonaktif</option>
                                 </select>
-                            </div>
+                            </div> --}}
 
-                            <h6 class="fw-bold">Data BPJS Ketenagakerjaan</h6>
+                        {{-- <h6 class="fw-bold">Data BPJS Ketenagakerjaan</h6>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">No Kartu BPJS Ketenagakerjaan</label>
@@ -363,19 +364,18 @@
                                             Nonaktif</option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
+                            </div> --}}
+                    </div>
+                    @csrf
+                    <div class="col-12 d-flex gap-2 justify-content-end mt-3">
+                        <a href="{{ route('karyawan') }}" class="btn btn-danger">
+                            <i class="bi bi-arrow-left-circle me-1"></i> Kembali
+                        </a>
 
-                        @csrf
-                        <div class="col-12 d-flex gap-2 justify-content-end mt-3">
-                            <a href="{{ route('karyawan') }}" class="btn btn-danger">
-                                <i class="bi bi-arrow-left-circle me-1"></i> Kembali
-                            </a>
-
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-1"></i> Registrasi & Simpan
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> Registrasi & Simpan
+                        </button>
+                    </div>
                 </form>
             </div>
             </form>

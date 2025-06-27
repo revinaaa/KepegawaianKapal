@@ -40,35 +40,24 @@ class Karyawan extends Model
     'no_kk',
     'nama_istri',
     'nik_istri',
+    'status_keluarga',
     'nama_anak_pertama',
     'nik_anak_pertama',
     'nama_anak_kedua',
     'nik_anak_kedua',
     'nama_anak_ketiga',
     'nik_anak_ketiga',
-    'status_keluarga',
     'nama_ibu',
     'nik_ibu',
     'pendidikan',
     'usia',
     'no_telepon_darurat',
 
-    // BPJS Kesehatan
-    'no_kartu_kes',
-    'nama_kes',
-    'kelas_rawat_kes',
-    'tanggal_daftar_kes',
-    'status_bpjs_kes',
-
-    // BPJS Ketenagakerjaan
-    'no_kartu_kerja',
-    'nama_kerja',
-    'kelas_rawat_kerja',
-    'tanggal_daftar_kerja',
-    'status_bpjs_kerja',
 
     // Relasi ke User
     'user_nik',
+
+    
 ];
 
 
@@ -99,14 +88,15 @@ class Karyawan extends Model
         return $this->belongsTo(User::class, 'user_nik', 'nik');
     }
 
-    public function bpjsKesehatan()
+public function bpjsKesehatan()
 {
-    return $this->belongsTo(BpjsKesehatan::class, 'id_bpjs_kesehatan');
+    return $this->hasOne(BpjsKesehatan::class, 'nik', 'nik');
 }
 
 public function bpjsKetenagakerjaan()
 {
-    return $this->belongsTo(BpjsKetenagakerjaan::class, 'id_bpjs_ketenagakerjaan');
+    return $this->hasOne(BpjsKetenagakerjaan::class, 'nik', 'nik');
 }
+
 
 }

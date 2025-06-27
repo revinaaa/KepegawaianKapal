@@ -55,8 +55,8 @@
 
                                 <div class="d-flex align-items-center justify-content-center gap-3">
                                     <a class="text-primary fw-bold" href="{{ route('login') }}">Kembali ke Login</a>
-                                    <span>|</span>
-                                    <a class="text-primary fw-bold" href="{{ route('registrasi') }}">Buat Akun</a>
+                                    {{-- <span>|</span>
+                                    <a class="text-primary fw-bold" href="{{ route('registrasi') }}">Buat Akun</a> --}}
                                 </div>
                             </div> <!-- end card-body -->
                         </div> <!-- end card -->

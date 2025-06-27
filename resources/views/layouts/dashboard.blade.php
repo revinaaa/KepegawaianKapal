@@ -162,17 +162,17 @@
 
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
-                         @if (Auth::user()->role_id === 3)
-                        <li class="nav-small-cap">
-                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                            <span class="hide-menu">Home</span>
-                        </li>                       
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('dashboard') }}">
-                                <i class="ti ti-layout-dashboard"></i>
-                                <span class="hide-menu">Dashboard</span>
-                            </a>
-                        </li>
+                        @if (Auth::user()->role_id === 3)
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">Home</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('dashboard') }}">
+                                    <i class="ti ti-layout-dashboard"></i>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
                         @endif
 
                         @if (in_array(Auth::user()->role_id, [1, 2]))
@@ -185,7 +185,18 @@
                             <li class="sidebar-item"><a class="sidebar-link" href="{{ route('karyawan') }}"><i
                                         class="ti ti-file-description"></i><span class="hide-menu">Karyawan</span></a>
                             </li>
-
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('bpjsKesehatan') }}">
+                                    <i class="ti ti-file"></i>
+                                    <span class="hide-menu">BPJS Kesehatan</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('bpjs-ketenaga-kerjaan') }}">
+                                    <i class="ti ti-file"></i>
+                                    <span class="hide-menu">BPJS Ketenagakerjaan</span>
+                                </a>
+                            </li>
                             <li class="sidebar-item">
                                 <a class="sidebar-link" href="{{ route('cuti') }}">
                                     <i class="ti ti-file"></i>
@@ -280,48 +291,6 @@
                             setInterval(updateDateTime, 1000);
                             updateDateTime();
                         </script>
-
-
-
-                        {{-- <!-- Notification -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link nav-icon-hover position-relative dropdown-toggle" href="#"
-                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="ti ti-bell-ringing"></i>
-                                @php
-                                    use App\Models\Cuti;
-                                    $notifikasiCuti = Cuti::where('status', 'pending')
-                                        ->orderBy('created_at', 'desc')
-                                        ->take(5)
-                                        ->get();
-                                    $jumlahNotifikasi = $notifikasiCuti->count();
-                                @endphp
-                                @if ($jumlahNotifikasi > 0)
-                                    <span
-                                        class="position-absolute top-10 start-20 translate-middle badge rounded-pill bg-danger">
-                                        {{ $jumlahNotifikasi }}
-                                    </span>
-                                @endif
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 300px;">
-                                <li class="dropdown-header fw-bold">Pengajuan Cuti Baru</li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                @forelse ($notifikasiCuti as $cuti)
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('cuti') }}">
-                                            {{ $cuti->user->karyawan->nama ?? 'Pegawai' }} mengajukan cuti
-                                        </a>
-                                    </li>
-                                @empty
-                                    <li><a class="dropdown-item text-muted">Tidak ada notifikasi</a></li>
-                                @endforelse
-                                <li><a class="dropdown-item text-center text-primary fw-bold"
-                                        href="{{ route('cuti') }}">Lihat Semua</a></li>
-                            </ul>
-                        </li> --}}
-
                     </ul>
 
                     <!-- User Info -->

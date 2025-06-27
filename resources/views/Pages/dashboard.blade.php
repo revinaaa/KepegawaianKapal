@@ -13,12 +13,29 @@
 
                     @forelse($karyawans as $karyawan)
                         <h5 class="fw-semibold mb-3">Informasi Karyawan</h5>
+
+                        {{-- Foto Profil --}}
+                        <div class="text-center mb-4">
+                            @if (!empty($karyawan->foto))
+                                <img src="{{ asset('storage/cover/' . $karyawan->foto) }}" alt="Avatar"
+                                     class="img-thumbnail rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            @else
+                                <img src="{{ asset('img/foto-tidak-ada.png') }}" alt="No Avatar"
+                                     class="img-thumbnail rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            @endif
+                        </div>
+
+                        {{-- Data Pribadi --}}
                         <div class="row">
                             <div class="col-md-6 mb-2"><strong>Nama:</strong> {{ $karyawan->nama }}</div>
                             <div class="col-md-6 mb-2"><strong>Jabatan:</strong> {{ $karyawan->jabatan->nama ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Area Kerja:</strong> {{ $karyawan->area_kerja ?? '-' }}</div>
-                            <div class="col-md-6 mb-2"><strong>Tempat & Tgl Lahir:</strong> {{ $karyawan->tempat_lahir ?? '-' }},
-                                {{ \Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d M Y') ?? '-' }}</div>
+                            <div class="col-md-6 mb-2"><strong>Tempat & Tgl Lahir:</strong>
+                                {{ $karyawan->tempat_lahir ?? '-' }},
+                                {{ \Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d M Y') ?? '-' }}
+                            </div>
                             <div class="col-md-6 mb-2"><strong>Usia:</strong> {{ $karyawan->usia }} tahun</div>
                             <div class="col-md-6 mb-2"><strong>No Telepon:</strong> {{ $karyawan->no_telepon ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Golongan Darah:</strong> {{ $karyawan->golongan_darah ?? '-' }}</div>
@@ -27,13 +44,15 @@
                             <div class="col-md-6 mb-2"><strong>Alamat:</strong> {{ $karyawan->alamat ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Nama Kapal:</strong> {{ $karyawan->nama_kapal ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Tanggal Mulai Kerja:</strong>
-                                {{ \Carbon\Carbon::parse($karyawan->doh)->format('d M Y') ?? '-' }}</div>
+                                {{ \Carbon\Carbon::parse($karyawan->doh)->format('d M Y') ?? '-' }}
+                            </div>
                             <div class="col-md-6 mb-2"><strong>Nama Ibu:</strong> {{ $karyawan->nama_ibu ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>NIK Ibu:</strong> {{ $karyawan->nik_ibu ?? '-' }}</div>
                         </div>
 
                         <hr class="my-4">
 
+                        {{-- Data Keluarga --}}
                         <h5 class="fw-semibold">Data Keluarga</h5>
                         <div class="row">
                             <div class="col-md-6 mb-2"><strong>Status Pernikahan:</strong> {{ $karyawan->status_keluarga ?? '-' }}</div>
@@ -62,34 +81,36 @@
 
                         <hr class="my-4">
 
+                        {{-- BPJS Kesehatan --}}
                         <h5 class="fw-semibold">BPJS Kesehatan</h5>
                         <div class="row">
-                            <div class="col-md-6 mb-2"><strong>No Kartu:</strong> {{ $karyawan->bpjsKesehatan->no_kartu_bpjs_kesehatan ?? '-' }}</div>
-                            <div class="col-md-6 mb-2"><strong>Nama Peserta:</strong> {{ $karyawan->bpjsKesehatan->nama_peserta_bpjs_kesehatan ?? '-' }}</div>
+                            <div class="col-md-6 mb-2"><strong>No Kartu:</strong> {{ $karyawan->bpjsKesehatan->no_kartu ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Kelas Rawat:</strong> {{ $karyawan->bpjsKesehatan->kelas_rawat ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Tanggal Daftar:</strong>
-                                {{ optional($karyawan->bpjsKesehatan)->tanggal_daftar_bpjs_kesehatan ? \Carbon\Carbon::parse($karyawan->bpjsKesehatan->tanggal_daftar_bpjs_kesehatan)->format('d M Y') : '-' }}</div>
-                            <div class="col-md-6 mb-2"><strong>Status:</strong> {{ $karyawan->bpjsKesehatan->status_bpjs_kesehatan ?? '-' }}</div>
+                                {{ optional($karyawan->bpjsKesehatan)->tanggal_daftar ? \Carbon\Carbon::parse($karyawan->bpjsKesehatan->tanggal_daftar)->format('d M Y') : '-' }}
+                            </div>
+                            <div class="col-md-6 mb-2"><strong>Status:</strong> {{ $karyawan->bpjsKesehatan->status_bpjs ?? '-' }}</div>
                         </div>
 
                         <hr class="my-4">
 
+                        {{-- BPJS Ketenagakerjaan --}}
                         <h5 class="fw-semibold">BPJS Ketenagakerjaan</h5>
                         <div class="row">
-                            <div class="col-md-6 mb-2"><strong>No Kartu:</strong> {{ $karyawan->bpjsKetenagakerjaan->no_kartu_bpjs_ketenagakerjaan ?? '-' }}</div>
-                            <div class="col-md-6 mb-2"><strong>Nama Peserta:</strong> {{ $karyawan->bpjsKetenagakerjaan->nama_peserta_bpjs_ketenagakerjaan ?? '-' }}</div>
+                            <div class="col-md-6 mb-2"><strong>No Kartu:</strong> {{ $karyawan->bpjsKetenagakerjaan->no_kartu ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Kelas Rawat:</strong> {{ $karyawan->bpjsKetenagakerjaan->kelas_rawat ?? '-' }}</div>
                             <div class="col-md-6 mb-2"><strong>Tanggal Daftar:</strong>
-                                {{ optional($karyawan->bpjsKetenagakerjaan)->tanggal_daftar_bpjs_ketenagakerjaan ? \Carbon\Carbon::parse($karyawan->bpjsKetenagakerjaan->tanggal_daftar_bpjs_ketenagakerjaan)->format('d M Y') : '-' }}</div>
-                            <div class="col-md-6 mb-2"><strong>Status:</strong> {{ $karyawan->bpjsKetenagakerjaan->status_bpjs_ketenagakerjaan ?? '-' }}</div>
+                                {{ optional($karyawan->bpjsKetenagakerjaan)->tanggal_daftar ? \Carbon\Carbon::parse($karyawan->bpjsKetenagakerjaan->tanggal_daftar)->format('d M Y') : '-' }}
+                            </div>
+                            <div class="col-md-6 mb-2"><strong>Status:</strong> {{ $karyawan->bpjsKetenagakerjaan->status_bpjs ?? '-' }}</div>
                         </div>
+
+                        <hr class="my-4">
                     @empty
                         <div class="alert alert-warning mt-3">Data karyawan belum tersedia.</div>
                     @endforelse
                 </div>
             </div>
         </div>
-    @else
-       
     @endif
 @endsection

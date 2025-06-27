@@ -100,16 +100,19 @@
 <body>
 
     <!-- Kop Surat -->
-    <div class="kop-surat">
-        <img src="{{ asset('storage/logo/PT_Masada_Jaya_Lines.png') }}" alt="Logo">
-        <div class="kop-text">
-            <h2>PT MASADA JAYA LINES</h2>
-            <p><strong>SIUPAL No.:</strong> BXXV 440 / AL-58</p>
-            <p>Jl. Kapten Pierre Tendean No.174 RT.014, Kel. Seberang Mesjid</p>
-            <p>Kec. Banjarmasin Tengah, Kota Banjarmasin 70231</p>
-            <p>Telp. +62 511 3261257</p>
-        </div>
-    </div>
+   <table width="100%" style="border-bottom: 2px solid #000; margin-bottom: 20px; padding-bottom: 10px;">
+    <tr>
+        <td style="width: 80px;">
+            <img src="{{ $logoBase64 }}" alt="Logo" style="width: 80px;">
+        </td>
+        <td style="text-align: left;">
+            <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">PT MASADA JAYA LINES</h2>
+            <p style="margin: 2px 0; font-size: 12px;"><strong>SIUPAL No.:</strong> BXXV 440 / AL-58</p>
+            <p style="margin: 2px 0; font-size: 12px;">Jl Kapten Pierre Tendean No.174 RT.014 Kel. Seberang Mesjid Kec. Banjarmasin Tengah</p>
+            <p style="margin: 2px 0; font-size: 12px;">Kota Banjarmasin 70231 - Tel. +62511 3261257</p>
+        </td>
+    </tr>
+</table>
 
     <!-- Judul Surat -->
     <div class="judul-surat">
